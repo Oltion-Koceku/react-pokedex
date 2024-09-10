@@ -1,6 +1,12 @@
+import { useEffect } from "react";
 import React from "react";
 
 const CardPokemon = ({ name, index, attribute }) => {
+
+  // useEffect(() => {
+  //   console.log(attribute);
+  // }, [attribute]);
+
   return (
     <div className="col-md-3" key={index}>
       <div className="card-sl">
