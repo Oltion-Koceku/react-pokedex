@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import CardPokemon from "../Partials/CardPokemon";
+import Loader from "../Partials/Loader";
 
 const Main = () => {
   const [listPokemon, setListPokemon] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [allSuggestions, setAllSuggestions] = useState([]); // Stato per mantenere tutti i Pokémon
   const [filteredSuggestions, setFilteredSuggestions] = useState([]); // Stato per suggerimenti filtrati
+  const [loading, setLoading] = useState(false); // Usa lo stato per gestire il caricamento
 
   const getAttribute = (url, name) => {
     if (typeof url !== "string") {
@@ -29,7 +31,7 @@ const Main = () => {
 
   // Funzione per ottenere i dati dall'API
   const getApi = () => {
-    // Ottieni i nomi di tutti i Pokémon per i suggerimenti
+    setLoading(true);
     Axios.get("https://pokeapi.co/api/v2/pokemon?limit=1000")
       .then((res) => {
         const pokemonNames = res.data.results.map((pokemon) => pokemon.name); // Crea un array con i nomi
@@ -39,74 +41,85 @@ const Main = () => {
         console.log(error.message);
       });
 
-    // Stampa i primi 20 Pokémon
     Axios.get("https://pokeapi.co/api/v2/pokemon")
       .then((res) => {
         res.data.results.forEach((pokemon) => {
           getAttribute(pokemon.url, pokemon.name);
         });
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error.message);
+        setLoading(false);
+      });
+  };
+
+  const randomPokemon = () => {
+    setLoading(true);
+    const randomName =
+      allSuggestions[Math.floor(Math.random() * allSuggestions.length)];
+    Axios.get(`https://pokeapi.co/api/v2/pokemon/${randomName}`)
+      .then((res) => {
+        getAttribute(res.data, res.data.name);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.message);
+        setLoading(false);
       });
   };
 
   const getSuggestions = (value) => {
-    // Filtra i suggerimenti mentre l'utente digita
     if (value.trim() === "") {
-      setFilteredSuggestions([]); // Se l'input è vuoto, non mostrare suggerimenti
+      setFilteredSuggestions([]);
       return;
     }
 
     const filtered = allSuggestions.filter((name) =>
       name.toLowerCase().startsWith(value.toLowerCase())
     );
-    setFilteredSuggestions(filtered); // Aggiorna solo i suggerimenti filtrati
+    setFilteredSuggestions(filtered);
   };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchValue(value);
-    getSuggestions(value); // Aggiorna i suggerimenti filtrati mentre l'utente digita
+    getSuggestions(value);
   };
 
   const searchPokemon = (e) => {
-    e.preventDefault(); // Previene il refresh della pagina
+    e.preventDefault();
     if (searchValue.trim() === "") {
-      const message = "Devi inserire dei caratteri corretti";
-      return console.log(message);
+      return console.log("Devi inserire dei caratteri corretti");
     }
+    setLoading(true);
     Axios.get(`https://pokeapi.co/api/v2/pokemon/${searchValue}`)
       .then((res) => {
         getAttribute(res.data, res.data.name);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error.message);
+        setLoading(false);
       });
   };
 
-  // useEffect per chiamare l'API una volta al caricamento del componente
   useEffect(() => {
     getApi();
   }, []);
 
-  // per vedere i log in modo asincrono
-  useEffect(() => {
-    console.log(filteredSuggestions);
-  }, [filteredSuggestions]);
-
   return (
     <div className="Main">
       <div className="container">
-        <div className="searchMenu pt-5">
+        <div className="searchMenu pt-5 d-flex">
           <form onSubmit={searchPokemon} className="d-flex" role="search">
             <input
-              className="form-control me-2 w-25"
+              className="form-control me-2 w-100"
               type="search"
               placeholder="Search"
               aria-label="Search"
               value={searchValue}
-              onChange={handleSearchChange} // Aggiorna lo stato
+              onChange={handleSearchChange}
               list="datalistOptions"
             />
             <datalist id="datalistOptions">
@@ -118,12 +131,24 @@ const Main = () => {
               Search
             </button>
           </form>
+          <button
+            onClick={randomPokemon}
+            className="btn btn-outline-danger mx-2"
+            type="button"
+          >
+            Random
+          </button>
         </div>
-        <div className="cards">
-          <div className="container" style={{ marginTop: "50px" }}>
-            <div className="row">
-              {Array.isArray(listPokemon) ? (
-                listPokemon.length > 0 ? (
+
+        {loading ? (
+          <div className="loading-container">
+            <Loader />
+          </div>
+        ) : (
+          <div className="cards">
+            <div className="container h-100" style={{ marginTop: "50px" }}>
+              <div className="row">
+                {listPokemon.length > 0 ? (
                   listPokemon.map((pokemon, index) => (
                     <CardPokemon
                       key={index}
@@ -133,18 +158,12 @@ const Main = () => {
                     />
                   ))
                 ) : (
-                  <p>Loading Pokémon...</p>
-                )
-              ) : (
-                <CardPokemon
-                  name={listPokemon.name}
-                  attribute={listPokemon.data}
-                  index={0}
-                />
-              )}
+                  <p>No Pokémon found</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

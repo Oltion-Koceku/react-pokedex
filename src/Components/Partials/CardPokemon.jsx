@@ -17,7 +17,7 @@ const CardPokemon = ({ name, index, attribute }) => {
           />
         </div>
 
-        <div className="card-heading">{name}</div>
+        <div className="card-heading text-capitalize">{name}</div>
         <div className="card-text">This is a Pokémon from the Pokédex.</div>
         <a href="#" className="card-button">
           Details
