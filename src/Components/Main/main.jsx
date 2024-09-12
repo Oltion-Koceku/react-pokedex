@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import CardPokemon from "../Partials/CardPokemon";
 import Loader from "../Partials/Loader";
+import MyPokemon from "../Partials/MyPokemon";
 
 const Main = () => {
   const [listPokemon, setListPokemon] = useState([]);
@@ -65,6 +66,7 @@ const Main = () => {
       .then((res) => {
         getAttribute(res.data, res.data.name);
         setLoading(false);
+        
       })
       .catch((error) => {
         console.log(error.message);
@@ -112,7 +114,8 @@ const Main = () => {
   }, []);
 
   return (
-    <div className="Main">
+    <div className="Main position-relative">
+      <MyPokemon  />
       <div className="container">
         <div className="searchMenu pt-5 d-flex">
           <form onSubmit={searchPokemon} className="d-flex" role="search">
