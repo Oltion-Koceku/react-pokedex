@@ -32,6 +32,9 @@ const Main = () => {
   // Funzione per ottenere i dati dall'API
   const getApi = () => {
     setLoading(true);
+    if (listPokemon.length > 0) {
+      setListPokemon([])
+    }
     Axios.get("https://pokeapi.co/api/v2/pokemon?limit=1000")
       .then((res) => {
         const pokemonNames = res.data.results.map((pokemon) => pokemon.name); // Crea un array con i nomi
@@ -136,7 +139,15 @@ const Main = () => {
             className="btn btn-outline-danger mx-2"
             type="button"
           >
-            Random
+            Random Pokemon
+          </button>
+          <button
+            onClick={getApi}
+            className="btn btn-outline-warning mx-1"
+            type="button"
+            
+          >
+            Reset
           </button>
         </div>
 
@@ -146,8 +157,8 @@ const Main = () => {
           </div>
         ) : (
           <div className="cards">
-            <div className="container h-100" style={{ marginTop: "50px" }}>
-              <div className="row">
+            <div className='container h-100'  style={{ marginTop: "50px" }}>
+              <div className={`row ${listPokemon.length === 1 ? 'hvh' : ''}`}>
                 {listPokemon.length > 0 ? (
                   listPokemon.map((pokemon, index) => (
                     <CardPokemon

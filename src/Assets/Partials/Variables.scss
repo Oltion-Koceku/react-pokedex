@@ -1,13 +1,18 @@
 @import url('https://fonts.cdnfonts.com/css/pokemon-solid');
 
+
 // Header
 
   .App {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
   }
   
+
+  .hvh{
+    height: 100vh;
+  }
   
   
  
