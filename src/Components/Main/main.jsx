@@ -127,7 +127,8 @@ const Main = () => {
     };
   
     const clearLocalStorage = () =>{
-      localStorage.removeItem('myPokemon')
+      setMyPokemon([]);
+      localStorage.removeItem("myPokemon");
     }
 
 
