@@ -142,6 +142,7 @@ const Main = () => {
         localStorage.setItem("myPokemon", JSON.stringify(updatedPokemon));
       } else {
         console.log(`${newPokemon.name} è già stato catturato.`);
+        
       }
     };
 
@@ -197,8 +198,8 @@ const Main = () => {
           </div>
         ) : (
           <div className="cards">
-            <div className='container h-100'  style={{ marginTop: "50px" }}>
-              <div className={`row ${listPokemon.length === 1 ? 'hvh' : ''}`}>
+            <div className='container  h-100'  style={{ marginTop: "50px" }}>
+              <div className={`flex-wrap d-flex justify-content-center ${listPokemon.length === 1 ? 'hvh' : ''}`}>
                 {listPokemon.length > 0 ? (
                   listPokemon.map((pokemon, index) => (
                     <CardPokemon
