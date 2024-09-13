@@ -45,6 +45,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  .free{
+    position: absolute;
+    bottom: -20px;
+    left: 26px;
+    border: 10px solid red;
+  }
 
   .main{
     width: 100%;
@@ -56,7 +63,14 @@
       width: 200px;
       height: 250px;
       background-color: #5BACDB;
-      
+      overflow: scroll;
+      border: 5px solid black;
+      p{
+        font-size: 15px;
+      }
+      img{
+        width: 70px;
+      }
     }
   }
   .top {

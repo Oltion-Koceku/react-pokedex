@@ -5,6 +5,10 @@ import Loader from "../Partials/Loader";
 import MyPokemon from "../Partials/MyPokemon";
 
 const Main = () => {
+  // costanti per il componente MyPokemon
+  const [myPokemon, setMyPokemon] = useState([]);
+  const [message, setMessage] = useState("Non hai catturato nessun pokemon");
+
   const [listPokemon, setListPokemon] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [allSuggestions, setAllSuggestions] = useState([]); // Stato per mantenere tutti i Pokémon
@@ -109,13 +113,45 @@ const Main = () => {
       });
   };
 
+    // Funzioni per il componente MyPokemon
+
+    const getPokemon = () => {
+      const storedPokemon = JSON.parse(localStorage.getItem("myPokemon"));
+      
+      if (storedPokemon && storedPokemon.length > 0) {
+        setMyPokemon(storedPokemon);
+      } else {
+        setMyPokemon([]);
+        console.log(storedPokemon ? storedPokemon.length : 0);
+      }
+    };
+  
+    const clearLocalStorage = () =>{
+      localStorage.removeItem('myPokemon')
+    }
+
+
+    const addPokemon = (newPokemon) => {
+      // Verifica se il Pokémon è già stato catturato
+      const alreadyCaught = myPokemon.some(pokemon => pokemon.name === newPokemon.name);
+  
+      if (!alreadyCaught) {
+        const updatedPokemon = [...myPokemon, newPokemon];
+        setMyPokemon(updatedPokemon);
+        localStorage.setItem("myPokemon", JSON.stringify(updatedPokemon));
+      } else {
+        console.log(`${newPokemon.name} è già stato catturato.`);
+      }
+    };
+
   useEffect(() => {
     getApi();
+    getPokemon();
   }, []);
 
   return (
     <div className="Main position-relative">
-      <MyPokemon  />
+      <MyPokemon myPokemon={myPokemon} message={message} clearLocalStorage={clearLocalStorage} />
       <div className="container">
         <div className="searchMenu pt-5 d-flex">
           <form onSubmit={searchPokemon} className="d-flex" role="search">
@@ -169,6 +205,7 @@ const Main = () => {
                       name={pokemon.name}
                       attribute={pokemon.data}
                       index={index}
+                      addPokemon={addPokemon}
                     />
                   ))
                 ) : (
