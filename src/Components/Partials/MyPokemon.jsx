@@ -4,7 +4,7 @@ const MyPokemon = ({myPokemon,message, clearLocalStorage}) => {
 
 
   return (
-    <div className="pokedex text-white position-absolute">
+    <div className="pokedex text-white position-fixed">
       <div className="container d-flex flex-column">
         <div className="top">
           <div className="circle">
