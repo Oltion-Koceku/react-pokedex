@@ -2,7 +2,7 @@ import React from 'react'
 
 const PokeBall = () => {
   return (
-    <div class="pokeball"></div>
+    <div className="pokeball"></div>
   )
 }
 
